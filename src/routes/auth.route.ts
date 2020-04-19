@@ -11,7 +11,6 @@ router.get('/login', (req: Request, res: Response, next: Function) => {
 })
 
 router.post('/login', (req: Request, res: Response, next: Function) => {
-    console.log(req.body)
     const token = {
         _id: req.body._id
     }
@@ -20,7 +19,7 @@ router.post('/login', (req: Request, res: Response, next: Function) => {
     })
     
     res.cookie('sid', signedToken, {
-        expires: new Date(Date.now() +  10000),
+        expires: new Date(Date.now() +  3600000),
         httpOnly: true,
         secure: false
     })
@@ -33,7 +32,7 @@ router.post('/logout', passport.authenticate('jwt', { session: false }), (req: R
     next();
 })
 
-router.post('/anyotherroute', passport.authenticate('jwt', { session: false }), (req: Request, res: Response, next: Function) => {
+router.post('/anyotherroute', passport.authenticate('jwt', { session: false,  }), (req: Request, res: Response, next: Function) => {
     console.log(req.body)
     res.sendStatus(200)
     next()

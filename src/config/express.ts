@@ -24,6 +24,7 @@ function createExpressApp():Express {
     })
 
     app.use(route.auth)
+    app.use('/user', route.user)
 
     return app
 }
