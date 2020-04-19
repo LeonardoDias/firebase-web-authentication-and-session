@@ -7,14 +7,22 @@ const serviceAccount = JSON.parse(
   })
 );
 
-function createFirestoreDb() {
+let firestoreInstance: FirebaseFirestore.Firestore = null
+
+function getFirestoreInstance() {
+
+  if(firestoreInstance) {
+    return firestoreInstance
+  }
+
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount)
   });
-  const db = admin.firestore();
-  return db
+
+  firestoreInstance = admin.firestore();
+  return firestoreInstance
 }
 
 export default {
-  createFirestoreDb
+  getFirestoreInstance
 }
