@@ -16,12 +16,12 @@ export default abstract class FirebaseDAO<T> extends DAO<T> {
     async fetchSingle(id: string | number): Promise<T> {
         const collection = this.getCollection()
         const document_reference = collection.doc(id.toString())
-        const documentArray = <T><unknown> await document_reference.get()
-        console.log('fetchSingle', documentArray)
-        if (documentArray) { 
-            return documentArray
+        const document = await document_reference.get()
+        if(document && document.exists) {
+            const data = document.data()
+            return <T><unknown> {...data, _id: document_reference.id}
         } else {
-            []
+            return null
         }
     }
 
@@ -31,43 +31,53 @@ export default abstract class FirebaseDAO<T> extends DAO<T> {
                 value: string | number | boolean
             }[]): Promise<T[]> {
         const collection = this.getCollection()
-        let builtQuery = collection.select()
+        let builtQuery = null
         if(conditions.length) {
             conditions.forEach(condition => {
-                builtQuery = builtQuery.where(condition.field, condition.op, condition.value)
+                builtQuery = collection.where(condition.field, condition.op, condition.value)
             });
         }
-        const documentArray = <T[]><unknown> await builtQuery.get()
-        console.log('fetchAll', documentArray)
-        if (documentArray) { 
-            return documentArray
-        } else {
-            null
-        }
+        const queryResult = await (builtQuery || collection).get()
+        const documentArray = <T[]><unknown> queryResult.docs.map(doc => {
+            return {
+                ...doc.data(),
+                _id: doc.id
+            }
+        })
+        return documentArray
     }
 
     async insert(document: T, id: number | string = null): Promise<T> {
         const collection = this.getCollection()
         const document_reference = collection.doc(id?id.toString():null)
-        const result = <T><unknown> await document_reference.set(document)
-        console.log('insert', result)
-        return {...document, id: document_reference.id}
+        await document_reference.set(document)
+        return {...document, _id: document_reference.id}
     }
 
     async update(document: T, id: number | string): Promise<T> {
         const collection = this.getCollection()
-        const document_reference = collection.doc(id?id.toString():null)
-        const result = <T><unknown> await document_reference.update(document);
-        console.log('update', result)
-        return {...document, id: document_reference.id}
+        const document_reference = collection.doc(id.toString())
+        try {
+            await document_reference.update(document);
+            return {...document, id: document_reference.id}
+        } catch (err) {
+            if(err.code === 5) {
+                return null
+            }
+            throw err
+        }
     }
 
     async delete(id: string | number): Promise<T> {
         const collection = this.getCollection();
-        const document_reference = collection.doc(id?id.toString():null);
-        const document = <T><unknown> await document_reference.get();
-        const result = await document_reference.delete();
-        console.log('delete', result)
-        return {...document, id: document_reference.id}
+        const document_reference = collection.doc(id.toString());
+        const document = await document_reference.get();
+        if(document.exists) {
+            const data = <T><unknown> document.data();
+            await document_reference.delete();
+            return {...data, id: document_reference.id}
+        } else {
+            return null
+        }
     }
   }
