@@ -4,27 +4,21 @@ import bodyParser from 'body-parser'
 import passport from 'passport'
 import passportJwt from './passport-jwt'
 
-import route from './../routes'
+import route from '../routes'
 
 function createExpressApp():Express {
     passportJwt.createPassportJwtStrategy();
     
     const app = express()
     app.use(cookieParser())
-    app.use(bodyParser.json())
+    app.use(bodyParser.urlencoded({
+        extended: true,
+    }))
     app.use(passport.initialize())
-
-    app.use('/', (req: Request, res: Response, next: Function) => {
-        if(!req.cookies['sid']) {
-            console.log('no cookie id')
-        } else {
-            console.log('cookie id')
-        }
-        next()
-    })
-
-    app.use(route.auth)
-    app.use('/user', route.user)
+    app.use('/', route.app.app)
+    app.use('/api/auth', bodyParser.json())
+    app.use('/api/auth', route.api.auth)
+    app.use('/api/user', route.api.user)
 
     return app
 }

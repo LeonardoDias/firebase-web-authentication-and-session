@@ -1,15 +1,14 @@
 import config from './src/config/'
+import App from './app'
 
-let app = null;
-
-(() => {
-  config.firebase.getFirestoreInstance();
-  app = config.express.createExpressApp();
-  const server = app.listen(3000, () => {
-    console.log('RUNNING');
-  })
-  process.on('SIGINT', async function() {
-    await server.close();
-    process.exit();
-  })
-})()
+config.dotenv.loadEnv()
+process.env.ROOT = __dirname
+let app = new App();
+app.init({
+  firestore: true
+});
+app.listen(parseInt(process.env.PORT) || 3000);
+process.on('SIGINT', async function() {
+  await app.close();
+  process.exit();
+});
