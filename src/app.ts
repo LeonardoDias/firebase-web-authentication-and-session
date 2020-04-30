@@ -1,5 +1,6 @@
 import config from './config'
 import { Express, Request, Response } from 'express'
+import IUser from './model/interface/user.interface'
 
 declare global {
     namespace Express {
@@ -8,6 +9,8 @@ declare global {
                 firestoreDB: FirebaseFirestore.Firestore
             }
         }
+
+        interface User extends IUser {}
     }
 
     namespace CustomError {

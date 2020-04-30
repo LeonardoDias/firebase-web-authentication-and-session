@@ -5,11 +5,20 @@ import request from "request-promise"
 
 const router = Router();
 
+router.get('/', passport.authenticate('jwt', 
+{
+    session: false, 
+    failureRedirect: '/login',
+}), (req, res, next) => {
+    res.send(`<p>Hello ${req.user.email}</p>
+    <form action="/logout" method="POST"><input type="submit"/></form>`)
+})
+
 router.get('/login', (req, res, next) => {
     passport.authenticate('jwt', 
         {
             session: false, 
-            successRedirect: '/home',
+            successRedirect: '/',
         },
         (err, user) => {
             if(err) {
@@ -18,7 +27,7 @@ router.get('/login', (req, res, next) => {
             } else if(!user) {
                 res.sendFile(path.join(process.env.ROOT+'/pages/index.html'))
             } else {
-                res.redirect('/home')
+                res.redirect('/')
             }
          }
     )(req, res, next)
@@ -44,7 +53,7 @@ router.post('/login', (req, res, next) => {
                 httpOnly: true,
                 secure: false
             })
-            res.redirect('/home')
+            res.redirect('/')
         }).catch((err) => {
             if(err.statusCode === 401 || err.statusCode === 400) {
                 res.status(err.statusCode).sendFile(path.join(process.env.ROOT+'/pages/index.html'))

@@ -5,7 +5,15 @@ function createPassportJwtStrategy(): passport.PassportStatic {
 
     const opts: StrategyOptions = {
         jwtFromRequest: (req) => {
-            return req.cookies['sid'] || req.get('Authorization')?req.get('Authorization').split(" ")[1]:null
+            if(req.cookies['sid']) {
+                return req.cookies['sid']
+            }
+
+            if(req.get('Authorization')) {
+                return req.get('Authorization').split(" ")[1]
+            }
+
+            return null
         },
         secretOrKey: process.env.JWT_TOKEN_SECRET        
     }
