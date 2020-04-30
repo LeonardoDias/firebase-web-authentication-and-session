@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+    <title>Index</title>
+</head>
+<body>
+    <div id="app">
+        <v-app id="inspire">
+            <v-content>
+                <v-container
+                    fluid
+                    fill-height
+                >
+                    <v-layout
+                    align-center
+                    justify-center
+                    >
+                    <v-flex
+                        xs12
+                        sm8
+                        md4
+                    >
+                        <v-card class="elevation-12">
+                        <v-toolbar
+                            color="primary"
+                            dark
+                            flat
+                        >
+                            <v-toolbar-title>Login form</v-toolbar-title>
+                            <v-spacer></v-spacer>
+                        </v-toolbar>
+                        <v-card-text>
+                            <v-form v-model="form.valid" action="/login" method="POST" @submit.prevent="login" id="check-login-form" ref="form">
+                            <v-text-field
+                                label="Email"
+                                name="email"
+                                prepend-icon="person"
+                                type="text"
+                                v-model:value="form.email"
+                                :rules="validation.email"
+                                required
+                                validate-on-blur
+                            ></v-text-field>
+            
+                            <v-text-field
+                                id="password"
+                                label="Password"
+                                name="password"
+                                prepend-icon="lock"
+                                type="password"
+                                v-model:value="form.password"
+                                :rules="validation.password"
+                                required
+                                validate-on-blur
+                            ></v-text-field>
+                            </v-form>
+                        </v-card-text>
+                        <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn color="primary" type="submit" form="check-login-form">Login</v-btn>
+                        </v-card-actions>
+                        </v-card>
+                    </v-flex>
+                    </v-layout>
+                </v-container>
+            </v-content>
+        </v-app>
+    </div>
+</body>
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+<script>
+    new Vue({
+        el: '#app',
+        vuetify: new Vuetify(),
+        data: () => ({
+            drawer: null,
+            form: {
+                email: '',
+                password: ''
+            },
+            validation: {
+                password: [
+                    function (v) {return !!v || 'Password is required'},
+                    function (v) {return v.length >= 5 || 'Password must be greater than 5 characters'},
+                ],
+                email: [
+                    function (v) {return !!v || 'E-mail is required'},
+                    function (v) {return /.+@.+/.test(v) || 'E-mail must be valid'},
+                ],
+            }
+        }),
+        methods: {
+            login: function (event) {
+                const validation = this.$refs.form.validate()
+                const formElement = event.srcElement
+                if(validation) {
+                    formElement.submit()
+                }
+                return validation
+            }
+        }
+    })
+  </script>
+  
+</html>
