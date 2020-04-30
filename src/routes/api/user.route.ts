@@ -1,12 +1,11 @@
 import { Router } from "express"
-import {UserController} from './../controller'
-import config from './../config/'
+import {UserController} from '../../controller'
+import config from '../../config'
 
 const router = Router();
 
 router.get('/', (req, res, next) => {
-    const firestoreInstance = config.firebase.getFirestoreInstance()    
-    UserController.fetchAll(firestoreInstance).then(value => {
+    UserController.fetchAll().then(value => {
         if(value && value.length > 0) {
             res.status(200).send(value)
         } else {
@@ -19,8 +18,7 @@ router.get('/', (req, res, next) => {
 })
 
 router.get('/:email', (req, res, next) => {
-    const firestoreInstance = config.firebase.getFirestoreInstance()    
-    UserController.fetchSingle(req.params['email'], firestoreInstance).then(value => {
+    UserController.fetchSingle(req.params['email']).then(value => {
         if(value) {
             res.status(200).send(value)
         } else {
@@ -33,8 +31,7 @@ router.get('/:email', (req, res, next) => {
 })
 
 router.post('/', (req, res, next) => {
-    const firestoreInstance = config.firebase.getFirestoreInstance()    
-    UserController.insert(req.body, firestoreInstance).then(value => {
+    UserController.insert(req.body).then(value => {
         res.status(201).send(value)
         next()
     }).catch(err => {
@@ -43,8 +40,7 @@ router.post('/', (req, res, next) => {
 })
 
 router.delete('/:email', (req, res, next) => {
-    const firestoreInstance = config.firebase.getFirestoreInstance()    
-    UserController.remove(req.params['email'], firestoreInstance).then(value => {
+    UserController.remove(req.params['email']).then(value => {
         if(value) {
             res.send(value).status(200)
         } else {
@@ -57,8 +53,7 @@ router.delete('/:email', (req, res, next) => {
 })
 
 router.put('/:email', (req, res, next) => {
-    const firestoreInstance = config.firebase.getFirestoreInstance()    
-    UserController.update({...req.body, email: req.params['email']}, firestoreInstance).then(value => {
+    UserController.update({...req.body, email: req.params['email']}).then(value => {
         if(value) {
             res.status(200).send(value)
         } else {
