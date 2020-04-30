@@ -9,6 +9,10 @@ declare global {
             }
         }
     }
+
+    namespace CustomError {
+        class UserInputError extends Error {}
+    }
 }
 
 export default class App {

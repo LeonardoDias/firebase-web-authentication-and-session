@@ -1,6 +1,6 @@
 import DAO from './dao';
 import Interface from './interface';
-import passport from 'passport';
+import IUser from './interface/user.interface';
 
 export default class UserModel {
   protected _DAO: DAO.firebase.UserDAO;
@@ -17,7 +17,12 @@ export default class UserModel {
     return await this._DAO.fetchSingle(email)
   }
 
-  authenticate = async (email: string, password: string) => {
+  authenticate = async (email: string, password: string):Promise<IUser> => {
+
+    if(!email && !password) {
+      throw new CustomError.UserInputError()
+    }
+
     const hashedPassword = password.toUpperCase().trim()
     const result_docs = await this._DAO.fetchAll({
       field: 'email',
