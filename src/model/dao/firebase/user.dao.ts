@@ -12,7 +12,7 @@ export default class UserDAO extends FirebaseDAO<Interface.User> {
                 op: FirebaseFirestore.WhereFilterOp, 
                 value: string | number | boolean
             }[]) {
-        return super.fetchAll(...conditions.filter(condition => condition.field !== 'password')).then(docs => 
+        return super.fetchAll(...conditions).then(docs => 
             docs.map(doc => {
                 if(doc && doc.password) {
                     delete doc.password
