@@ -1,7 +1,7 @@
-import auth from "./auth.route"
-import user from './user.route'
+import app from './app'
+import api from './api'
 
 export default {
-    auth,
-    user
+    app,
+    api
 }
