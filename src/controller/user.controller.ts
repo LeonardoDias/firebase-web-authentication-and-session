@@ -1,45 +1,46 @@
 import Model from './../model'
 import Interface from '../model/interface';
 
-export function fetchSingle(email: string) {
-    let dao = null;
-    dao = new Model.DAOfirebase.UserDAO();
-    const model = new Model.UserModel(dao);
-    return model.fetchSingle(email).then(value => {
-        return value
-    }).catch(err => {
-        throw err
-    })
-}
+export default class UserController {
 
-export function fetchAll() {
-    let dao = null;
-    dao = new Model.DAOfirebase.UserDAO();
-    const model = new Model.UserModel(dao);
-    return model.fetchAll().then(value => {
-        return value
-    }).catch(err => {
-        throw err
-    })
-}
+    protected _db: FirebaseFirestore.Firestore
 
-export function insert(document: Interface.User) {
-    let dao = null;
-    dao = new Model.DAOfirebase.UserDAO();
-    const model = new Model.UserModel(dao);
-    return model.insert(document)
-}
+    constructor(db: FirebaseFirestore.Firestore) {
+        this._db = db
+    }
 
-export function remove(email: string) {
-    let dao = null;
-    dao = new Model.DAOfirebase.UserDAO();
-    const model = new Model.UserModel(dao);
-    return model.delete(email)
-}
+    fetchSingle = (email: string) => {
+        let dao = null;
+        dao = new Model.DAOfirebase.UserDAO(this._db);
+        const model = new Model.UserModel(dao);
+        return model.fetchSingle(email)
+    }
 
-export function update(document: Interface.User) {
-    let dao = null;
-    dao = new Model.DAOfirebase.UserDAO();
-    const model = new Model.UserModel(dao);
-    return model.update(document)
+     fetchAll = () => {
+        let dao = null;
+        dao = new Model.DAOfirebase.UserDAO(this._db);
+        const model = new Model.UserModel(dao);
+        return model.fetchAll()
+    }
+
+     insert = (document: Interface.User) => {
+        let dao = null;
+        dao = new Model.DAOfirebase.UserDAO(this._db);
+        const model = new Model.UserModel(dao);
+        return model.insert(document)
+    }
+
+     remove = (email: string) => {
+        let dao = null;
+        dao = new Model.DAOfirebase.UserDAO(this._db);
+        const model = new Model.UserModel(dao);
+        return model.delete(email)
+    }
+
+     update = (document: Interface.User) => {
+        let dao = null;
+        dao = new Model.DAOfirebase.UserDAO(this._db);
+        const model = new Model.UserModel(dao);
+        return model.update(document)
+    }
 }

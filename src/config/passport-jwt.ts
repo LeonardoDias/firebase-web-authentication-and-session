@@ -1,29 +1,16 @@
 import passport from 'passport'
-import { Strategy, ExtractJwt, StrategyOptions } from 'passport-jwt';
+import { Strategy, StrategyOptions } from 'passport-jwt';
 
-function createPassportJwtStrategy(): void {
-
-    /*async function searchUserCb(searchParams: {_id: any}): Promise<any> {
-        const _id = searchParams._id;
-        if(_id === 10) {
-            return {
-                _id: 10,
-                email: "leonardodias914@gmail.com"
-            }
-        } else if (_id === -1) {
-            throw new Error("INVALID ID")
-        }
-        return null
-    }*/
+function createPassportJwtStrategy(): passport.PassportStatic {
 
     const opts: StrategyOptions = {
         jwtFromRequest: (req) => {
-            return req.cookies['sid']
+            return req.cookies['sid'] || req.get('Authorization')?req.get('Authorization').split(" ")[1]:null
         },
         secretOrKey: process.env.JWT_TOKEN_SECRET        
     }
 
-    passport.use(new Strategy(opts, function (jwt_payload: any, done: Function) {
+    return passport.use(new Strategy(opts, function (jwt_payload: any, done: Function) {
         if(jwt_payload.email && jwt_payload.name) {
                 return done(null, {
                     email: jwt_payload.email,
@@ -35,11 +22,6 @@ function createPassportJwtStrategy(): void {
     }))
 }
 
-function authenticate(options?: passport.AuthenticateOptions, cbFunction?: (...args: any[]) => any) {
-    return passport.authenticate('jwt', { session: false, ...options }, cbFunction)
+export default {
+    createPassportJwtStrategy
 }
-
-  export default {
-    createPassportJwtStrategy,
-    authenticate,
-  }

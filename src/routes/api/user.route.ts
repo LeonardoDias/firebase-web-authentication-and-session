@@ -1,11 +1,11 @@
 import { Router } from "express"
-import {UserController} from '../../controller'
-import config from '../../config'
+import {  UserController } from '../../controller'
 
 const router = Router();
 
 router.get('/', (req, res, next) => {
-    UserController.fetchAll().then(value => {
+    const userController = new UserController(req.context.firestoreDB)
+    userController.fetchAll().then(value => {
         if(value && value.length > 0) {
             res.status(200).send(value)
         } else {
@@ -18,7 +18,8 @@ router.get('/', (req, res, next) => {
 })
 
 router.get('/:email', (req, res, next) => {
-    UserController.fetchSingle(req.params['email']).then(value => {
+    const userController = new UserController(req.context.firestoreDB)
+    userController.fetchSingle(req.params['email']).then(value => {
         if(value) {
             res.status(200).send(value)
         } else {
@@ -31,7 +32,8 @@ router.get('/:email', (req, res, next) => {
 })
 
 router.post('/', (req, res, next) => {
-    UserController.insert(req.body).then(value => {
+    const userController = new UserController(req.context.firestoreDB)
+    userController.insert(req.body).then(value => {
         res.status(201).send(value)
         next()
     }).catch(err => {
@@ -40,7 +42,8 @@ router.post('/', (req, res, next) => {
 })
 
 router.delete('/:email', (req, res, next) => {
-    UserController.remove(req.params['email']).then(value => {
+    const userController = new UserController(req.context.firestoreDB)
+    userController.remove(req.params['email']).then(value => {
         if(value) {
             res.send(value).status(200)
         } else {
@@ -53,7 +56,8 @@ router.delete('/:email', (req, res, next) => {
 })
 
 router.put('/:email', (req, res, next) => {
-    UserController.update({...req.body, email: req.params['email']}).then(value => {
+    const userController = new UserController(req.context.firestoreDB)
+    userController.update({...req.body, email: req.params['email']}).then(value => {
         if(value) {
             res.status(200).send(value)
         } else {
