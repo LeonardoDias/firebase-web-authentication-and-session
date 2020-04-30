@@ -12,8 +12,8 @@ function createExpressApp(...defaultMiddlewareHandler: [(req: Request, res: Resp
         extended: true,
     }))
     app.use(passport.initialize())
-    app.use(defaultMiddlewareHandler)
     app.use('/', route.app.app)
+    app.use('/api', defaultMiddlewareHandler)
     app.use('/api/auth', bodyParser.json())
     app.use('/api/auth', route.api.auth)
     app.use('/api/user', route.api.user)
