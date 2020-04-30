@@ -1,7 +1,12 @@
 import Interface from '../../interface';
 import FirebaseDAO from './abstract.firebase.dao';
+import App from '../../../../app';
 
 export default class UserDAO extends FirebaseDAO<Interface.User> {
+
+    constructor(db: FirebaseFirestore.Firestore = App.getFirebaseapp(), collectionName: string = 'user') {
+        super(db, collectionName)
+    }
     
     async fetchAll(...conditions: {
                 field: string, 
