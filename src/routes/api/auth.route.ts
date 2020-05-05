@@ -1,6 +1,7 @@
 import { Router, Request, Response } from "express";
 import passport from "passport"
 import { UserController } from "./../../controller"
+import {DAO} from './../../model'
 
 const router = Router()
 
@@ -32,7 +33,8 @@ router.post('/', (req: Request, res: Response, next: Function) => {
     try {
         const email = req.body.email
         const password = req.body.password
-        const userController = new UserController(req.context.firestoreDB)
+        const userDAO = new DAO.myql.UserDAO(req.context.mysqlDB)
+        const userController = new UserController(null, userDAO)
         userController.authenticate(email, password).then(signedToken => {
             if(signedToken) {
                 res.status(200).send(JSON.stringify({key: signedToken}))

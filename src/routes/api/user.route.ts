@@ -1,10 +1,12 @@
 import { Router } from "express"
 import {  UserController } from '../../controller'
+import {DAO} from './../../model'
 
 const router = Router();
 
 router.get('/', (req, res, next) => {
-    const userController = new UserController(req.context.firestoreDB)
+    const userDAO = new DAO.myql.UserDAO(req.context.mysqlDB)
+    const userController = new UserController(null, userDAO)
     userController.fetchAll().then(value => {
         if(value && value.length > 0) {
             res.status(200).send(value)
@@ -18,7 +20,8 @@ router.get('/', (req, res, next) => {
 })
 
 router.get('/:email', (req, res, next) => {
-    const userController = new UserController(req.context.firestoreDB)
+    const userDAO = new DAO.myql.UserDAO(req.context.mysqlDB)
+    const userController = new UserController(null, userDAO)
     userController.fetchSingle(req.params['email']).then(value => {
         if(value) {
             res.status(200).send(value)
@@ -32,7 +35,8 @@ router.get('/:email', (req, res, next) => {
 })
 
 router.post('/', (req, res, next) => {
-    const userController = new UserController(req.context.firestoreDB)
+    const userDAO = new DAO.myql.UserDAO(req.context.mysqlDB)
+    const userController = new UserController(null, userDAO)
     userController.insert(req.body).then(value => {
         res.status(201).send(value)
         next()
@@ -42,7 +46,8 @@ router.post('/', (req, res, next) => {
 })
 
 router.delete('/:email', (req, res, next) => {
-    const userController = new UserController(req.context.firestoreDB)
+    const userDAO = new DAO.myql.UserDAO(req.context.mysqlDB)
+    const userController = new UserController(null, userDAO)
     userController.remove(req.params['email']).then(value => {
         if(value) {
             res.send(value).status(200)
@@ -56,7 +61,8 @@ router.delete('/:email', (req, res, next) => {
 })
 
 router.put('/:email', (req, res, next) => {
-    const userController = new UserController(req.context.firestoreDB)
+    const userDAO = new DAO.myql.UserDAO(req.context.mysqlDB)
+    const userController = new UserController(null, userDAO)
     userController.update({...req.body, email: req.params['email']}).then(value => {
         if(value) {
             res.status(200).send(value)

@@ -1,27 +1,23 @@
 import jwt from "jsonwebtoken"
-import Interface from '../model/interface';
-import IUser from '../model/interface/user.interface';
-import UserModel from '../model/user.model';
-import UserDAO from '../model/dao/firebase/user.dao';
+import {Model, DAO, Interface} from './../model'
 
 export default class UserController {
 
-    protected _db: FirebaseFirestore.Firestore
-    protected dao: UserDAO
-    protected model: UserModel
+    protected _model: Model.User
 
-    constructor(db: FirebaseFirestore.Firestore) {
-        this._db = db;
-        this.dao = new UserDAO(this._db)
-        this.model = new UserModel(this.dao)
+    constructor(model: Model.User = null, DAO: DAO.firebase.UserDAO | DAO.myql.UserDAO = null) {
+        if(model) {
+            this._model = model
+        } else {
+            this._model = new Model.User(DAO)
+        }
     }
 
     authenticate = (email: string, password: string):Promise<string> => {
-        const userModel = this.model
+        const userModel = this._model
         return userModel.authenticate(email, password).then(doc => {
             if(doc) {
                 const token = {
-                    _id: doc._id,
                     name: doc.name,
                     email: doc.email
                 }
@@ -35,28 +31,28 @@ export default class UserController {
         });
     }
 
-    fetchSingle = (email: string):Promise<IUser> => {
-        const userModel = new UserController(this._db);
+    fetchSingle = (email: string):Promise<Interface.User> => {
+        const userModel = this._model
         return userModel.fetchSingle(email)
     }
 
-     fetchAll = ():Promise<IUser[]> => {
-        const userModel = this.model
+     fetchAll = ():Promise<Interface.User[]> => {
+        const userModel = this._model
         return userModel.fetchAll()
     }
 
      insert = (document: Interface.User) => {
-        const userModel = this.model
+        const userModel = this._model
         return userModel.insert(document)
     }
 
      remove = (email: string) => {
-        const userModel = this.model
+        const userModel = this._model
         return userModel.delete(email)
     }
 
      update = (document: Interface.User) => {
-        const userModel = this.model
+        const userModel = this._model
         return userModel.update(document)
     }
 }

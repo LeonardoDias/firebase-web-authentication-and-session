@@ -46,7 +46,7 @@ export default abstract class MysqlDAO<T> extends DAO<T> {
         if(conditions.length > 0) {
             query += ` WHERE ${
                 conditions.map((condition, index, array) => {
-                    let queryPart = condition.field + " " + condition.op + " " + "?"
+                    let queryPart = condition.field + " " + condition.op.replace("==", "=") + " " + "?"
                     if(index != array.length - 1) {
                         queryPart = queryPart.concat(" AND ")
                     }

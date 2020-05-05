@@ -7,23 +7,23 @@ export default abstract class Model<T> {
     this._DAO = DAO;
   }
 
-  protected async fetchAll () {
+  public async fetchAll () {
     return await this._DAO.fetchAll()
   }
 
-  protected async fetchSingle (id: string | number) {
+  public async fetchSingle (id: string | number) {
     return await this._DAO.fetchSingle(id)
   }
 
-  protected async insert (document: T, id: string | number) {
+  public async insert (document: T, id: string | number) {
     return await this._DAO.insert(document, id)
   }
 
-  protected async update (document: T, id: string | number) {
+  public async update (document: T, id: string | number) {
     return await this._DAO.update(document, id)
   }
 
-  protected async delete (id: string | number) {
+  public async delete (id: string | number) {
     return await this._DAO.delete(id)
   }
 
