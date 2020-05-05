@@ -1,5 +1,5 @@
 import UserDAO from './user.dao'
-import AbstractDAO from './abstract.firebase.dao'
+import AbstractDAO from './abstract.mysql.dao'
 
 export default {
     UserDAO,

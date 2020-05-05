@@ -1,8 +1,10 @@
+import { Connection } from "mysql"
+
 export default abstract class DAO<T> {
   
-  protected _db: FirebaseFirestore.Firestore
+  protected _db: FirebaseFirestore.Firestore | Connection
 
-  constructor(db: FirebaseFirestore.Firestore) {
+  constructor(db: FirebaseFirestore.Firestore | Connection) {
     this._db = db
   }
   

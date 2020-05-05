@@ -10,7 +10,7 @@ export default abstract class FirebaseDAO<T> extends DAO<T> {
     }
 
     getCollection(): FirebaseFirestore.CollectionReference<FirebaseFirestore.DocumentData> {
-        return this._db.collection(this._collectionName);
+        return (<FirebaseFirestore.Firestore> this._db).collection(this._collectionName);
     }
 
     async fetchSingle(id: string | number): Promise<T> {

@@ -1,7 +1,9 @@
-import UserModel from './user.model'
+import Logic from './logic'
 import DAO from './dao'
+import Interface from './interface'
 
-export default {
-    DAOfirebase: DAO.firebase,
-    UserModel
+export {
+    DAO,
+    Interface,
+    Logic
 }

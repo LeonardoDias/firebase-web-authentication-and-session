@@ -1,22 +1,5 @@
-import config from './config'
+import * as config from './config'
 import { Express, Request, Response } from 'express'
-import IUser from './model/interface/user.interface'
-
-declare global {
-    namespace Express {
-        interface Request {
-            context: {
-                firestoreDB: FirebaseFirestore.Firestore
-            }
-        }
-
-        interface User extends IUser {}
-    }
-
-    namespace CustomError {
-        class UserInputError extends Error {}
-    }
-}
 
 export default class App {
 
@@ -30,6 +13,10 @@ export default class App {
         return config.firebase.getFirestoreInstance();
     }
 
+    private loadMysql = () => {
+        return config.mysql.getMySqlInstance()
+    }
+
     private loadJWTPassportStrategy = () => {
         return config.passportJwt.createPassportJwtStrategy();
     }
@@ -37,9 +24,11 @@ export default class App {
     init = () => {
         this.loadJWTPassportStrategy();
         const firestoreDB = this.loadFirebase();
+        const mysqlDB = this.loadMysql();
         this.app = config.express.createExpressApp((req: Request, res: Response, next: Function):void => {
             req.context = {
-                firestoreDB
+                firestoreDB,
+                mysqlDB
             }
             next()
         });
